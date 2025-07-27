@@ -10,15 +10,3 @@ members = [
 
 [patch.crates-io]
 ntex = { git = "https://github.com/incapdns/ntex.git", branch = "master" }
-ntex-bytes = { git = "https://github.com/incapdns/ntex.git", branch = "master" }
-ntex-codec = { git = "https://github.com/incapdns/ntex.git", branch = "master" }
-ntex-io = { git = "https://github.com/incapdns/ntex.git", branch = "master" }
-ntex-net = { git = "https://github.com/incapdns/ntex.git", branch = "master" }
-ntex-http = { git = "https://github.com/incapdns/ntex.git", branch = "master" }
-ntex-router = { git = "https://github.com/incapdns/ntex.git", branch = "master" }
-ntex-rt = { git = "https://github.com/incapdns/ntex.git", branch = "master" }
-ntex-server = { git = "https://github.com/incapdns/ntex.git", branch = "master" }
-ntex-service = { git = "https://github.com/incapdns/ntex.git", branch = "master" }
-ntex-tls = { git = "https://github.com/incapdns/ntex.git", branch = "master" }
-ntex-macros = { git = "https://github.com/incapdns/ntex.git", branch = "master" }
-ntex-util = { git = "https://github.com/incapdns/ntex.git", branch = "master" }
