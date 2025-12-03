@@ -48,7 +48,7 @@
 use std::{
     collections::HashSet, convert::TryFrom, iter::FromIterator, marker::PhantomData, rc::Rc,
 };
-
+use ntex::SharedCfg;
 use derive_more::Display;
 use ntex::http::header::{self, HeaderName, HeaderValue};
 use ntex::http::{HeaderMap, Method, RequestHead, StatusCode, Uri, error::HttpError};
@@ -720,13 +720,13 @@ pub struct CorsFactory<Err> {
     _t: PhantomData<Err>,
 }
 
-impl<S, Err> Middleware2<S> for CorsFactory<Err>
+impl<S, Err> Middleware2<S, SharedCfg> for CorsFactory<Err>
 where
     S: Service<WebRequest<Err>, Response = WebResponse>,
 {
     type Service = CorsMiddleware2<S>;
 
-    fn create(&self, service: S) -> Self::Service {
+    fn create(&self, service: S, _: SharedCfg) -> Self::Service {
         CorsMiddleware2 { service, inner: self.inner.clone() }
     }
 }
