@@ -5,8 +5,8 @@
 )]
 //! Cross-origin resource sharing (CORS) for ntex applications
 //!
-//! CORS middleware could be used with application and with resource.
-//! Cors middleware could be used as parameter for `App::wrap()`,
+//! CORS Middleware2 could be used with application and with resource.
+//! Cors Middleware2 could be used as parameter for `App::wrap()`,
 //! `Resource::wrap()` or `Scope::wrap()` methods.
 //!
 //! # Example
@@ -24,7 +24,7 @@
 //! async fn main() -> std::io::Result<()> {
 //!     web::server(async || App::new()
 //!         .wrap(
-//!             Cors::new() // <- Construct CORS middleware builder
+//!             Cors::new() // <- Construct CORS Middleware2 builder
 //!               .allowed_origin("https://www.rust-lang.org/")
 //!               .allowed_methods(vec![http::Method::GET, http::Method::POST])
 //!               .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
@@ -41,10 +41,10 @@
 //!         .await
 //! }
 //! ```
-//! In this example custom *CORS* middleware get registered for "/index.html"
+//! In this example custom *CORS* Middleware2 get registered for "/index.html"
 //! endpoint.
 //!
-//! Cors middleware automatically handle *OPTIONS* preflight request.
+//! Cors Middleware2 automatically handle *OPTIONS* preflight request.
 use std::{
     collections::HashSet, convert::TryFrom, iter::FromIterator, marker::PhantomData, rc::Rc,
 };
@@ -52,7 +52,7 @@ use std::{
 use derive_more::Display;
 use ntex::http::header::{self, HeaderName, HeaderValue};
 use ntex::http::{HeaderMap, Method, RequestHead, StatusCode, Uri, error::HttpError};
-use ntex::service::{Middleware, Service, ServiceCtx};
+use ntex::service::{Middleware2, Service, ServiceCtx};
 use ntex::util::Either;
 use ntex::web::{
     DefaultError, ErrorRenderer, HttpResponse, WebRequest, WebResponse, WebResponseError,
@@ -132,7 +132,7 @@ impl<T> AllOrSome<T> {
     }
 }
 
-/// Structure that follows the builder pattern for building `Cors` middleware
+/// Structure that follows the builder pattern for building `Cors` Middleware2
 /// structs.
 ///
 /// To construct a cors:
@@ -163,7 +163,7 @@ pub struct Cors {
 }
 
 impl Cors {
-    /// Build a new CORS middleware instance
+    /// Build a new CORS Middleware2 instance
     pub fn new() -> Self {
         Cors {
             cors: Some(Inner {
@@ -185,7 +185,7 @@ impl Cors {
     }
 
     #[allow(clippy::should_implement_trait)]
-    /// Build a new CORS default middleware
+    /// Build a new CORS default Middleware2
     pub fn default<Err>() -> CorsFactory<Err> {
         let inner = Inner {
             origins: AllOrSome::default(),
@@ -453,8 +453,8 @@ impl Cors {
 
     /// Disable *preflight* request support.
     ///
-    /// When enabled cors middleware automatically handles *OPTIONS* request.
-    /// This is useful application level middleware.
+    /// When enabled cors Middleware2 automatically handles *OPTIONS* request.
+    /// This is useful application level Middleware2.
     ///
     /// By default *preflight* support is enabled.
     pub fn disable_preflight(mut self) -> Self {
@@ -464,7 +464,7 @@ impl Cors {
         self
     }
 
-    /// Construct cors middleware
+    /// Construct cors Middleware2
     pub fn finish<Err>(self) -> CorsFactory<Err> {
         let mut slf = if !self.methods {
             self.allowed_methods(vec![
@@ -711,7 +711,7 @@ impl Inner {
     }
 }
 
-/// `Middleware` for Cross-origin resource sharing support
+/// `Middleware2` for Cross-origin resource sharing support
 ///
 /// The Cors struct contains the settings for CORS requests to be validated and
 /// for responses to be generated.
@@ -720,28 +720,28 @@ pub struct CorsFactory<Err> {
     _t: PhantomData<Err>,
 }
 
-impl<S, Err> Middleware<S> for CorsFactory<Err>
+impl<S, Err> Middleware2<S> for CorsFactory<Err>
 where
     S: Service<WebRequest<Err>, Response = WebResponse>,
 {
-    type Service = CorsMiddleware<S>;
+    type Service = CorsMiddleware2<S>;
 
     fn create(&self, service: S) -> Self::Service {
-        CorsMiddleware { service, inner: self.inner.clone() }
+        CorsMiddleware2 { service, inner: self.inner.clone() }
     }
 }
 
-/// `Middleware` for Cross-origin resource sharing support
+/// `Middleware2` for Cross-origin resource sharing support
 ///
 /// The Cors struct contains the settings for CORS requests to be validated and
 /// for responses to be generated.
 #[derive(Clone)]
-pub struct CorsMiddleware<S> {
+pub struct CorsMiddleware2<S> {
     service: S,
     inner: Rc<Inner>,
 }
 
-impl<S, Err> Service<WebRequest<Err>> for CorsMiddleware<S>
+impl<S, Err> Service<WebRequest<Err>> for CorsMiddleware2<S>
 where
     S: Service<WebRequest<Err>, Response = WebResponse>,
     Err: ErrorRenderer,
@@ -780,7 +780,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use ntex::service::{Middleware, Pipeline, fn_service};
+    use ntex::service::{Middleware2, Pipeline, fn_service};
     use ntex::web::{self, test, test::TestRequest};
 
     use super::*;
